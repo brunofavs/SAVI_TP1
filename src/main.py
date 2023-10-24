@@ -27,6 +27,7 @@ from functools import partial
 import numpy as np
 
 from lib.keyboardActions import *
+import os
 
 
 def main():
@@ -34,8 +35,18 @@ def main():
     # Initialization
     #-----------------------------
     # * Add adjustment parameters here
-    config = {"playback_speed": 30}
 
+    cascade_paths = ["../files/haarcascade_frontalface_default.xml",
+                      "../files/haarcascade_frontalface_alt.xml",
+                      "../files/haarcascade_frontalface_alt2.xml"
+                ]
+
+
+    config = {"playback_speed": 30,
+              "cascades" : {"paths" : cascade_paths,
+                            "scale_factor"   :1.1,
+                            "min_neighbours" : 9}}
+     
     cap = cv2.VideoCapture(0)
 
     if not cap.isOpened():
@@ -46,14 +57,26 @@ def main():
     #-----------------------------
     while True:
         
-        ret, frame = cap.read()
+        ret, image_source = cap.read()
 
         if not ret:
             print("Can't receive frame from camera. Exiting ...")
             break
         
-        image_gui = deepcopy(frame)
-
+        image_gui = deepcopy(image_source)
+        
+        # Converting image to grayscale 
+        gray_img = cv2.cvtColor(image_source, cv2.COLOR_BGR2GRAY) 
+        
+        # Loading the required haar-cascade xml classifier file 
+        haar_cascade = cv2.CascadeClassifier(config["cascades"]["paths"][0]) 
+        
+        # Applying the face detection method on the grayscale image 
+        faces_rect = haar_cascade.detectMultiScale(gray_img, config["cascades"]["scale_factor"], config["cascades"]["min_neighbours"]) 
+        
+        # Iterating through rectangles of detected faces 
+        for (x, y, w, h) in faces_rect: 
+            cv2.rectangle(image_gui, (x, y), (x+w, y+h), (0, 255, 0), 2) 
         #-----------------------------
         # Visualization
         #-----------------------------
