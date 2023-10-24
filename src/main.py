@@ -36,10 +36,6 @@ def main():
     # * Add adjustment parameters here
     config = {"playback_speed": 30}
 
-    
-
-    
-
     cap = cv2.VideoCapture(0)
 
     if not cap.isOpened():
