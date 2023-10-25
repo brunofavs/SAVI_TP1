@@ -2,7 +2,7 @@
 Repository for Advanced Computer Vision Systems course at University of Aveiro
 
 ## Repository owner: Bruno Filipe 98374 
-## Colaborators: Alexandre Carola 98365; Pedro Martins 103800.
+## Collaborators: Alexandre Carola 98365; Pedro Martins 103800.
 
 This repository was created for evaluation at Industrial Vision Advanced Systems "SAVI 23-24 Trabalho prático 1".
 
