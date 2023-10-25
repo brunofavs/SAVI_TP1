@@ -27,7 +27,6 @@ from functools import partial
 import numpy as np
 
 from lib.keyboardActions import *
-import os
 
 
 def main():
@@ -47,6 +46,7 @@ def main():
                             "scale_factor"   :1.1,
                             "min_neighbours" : 9}}
      
+    # Camera ID 0 is usually webcam
     cap = cv2.VideoCapture(0)
 
     if not cap.isOpened():
