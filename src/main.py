@@ -119,7 +119,6 @@ def main():
         if tracker_vars["initBB"] is not None:
             # grab the new bounding box coordinates of the object
             (success, box) = tracker.update(image_source)
-            print(success)
                 
                 # check to see if the tracking was a success
             if success:
