@@ -62,8 +62,8 @@ def main():
 
     config = {"playback_speed": 30,
               "cascade" : {"path" : cascade_paths[args["cascade"]],
-                            "scale_factor"   :1.1,
-                            "min_neighbours" : 13}}
+                            "scale_factor"   :1.1, # Smaller is more accurate but slower
+                            "min_neighbours" : 13}} # More neighbours means more accurate detections
      
     # Camera ID 0 is usually webcam
     cap = cv2.VideoCapture(0)
