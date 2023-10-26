@@ -26,8 +26,8 @@ import cv2
 from copy import deepcopy
 from functools import partial
 import numpy as np
-from imutils.video import FPS
 import imutils
+import time 
 
 from lib.keyboardActions import *
 
@@ -51,7 +51,7 @@ def main():
     # * Creating tracker based on argument parsed
     tracker = trackers[args["tracker"]]()
 
-    tracker_info = {"tracker" : tracker,
+    tracker_vars = {"tracker" : tracker,
                     "initBB": None}
 
     cascade_paths = ["../files/haarcascade_frontalface_default.xml",
@@ -63,15 +63,22 @@ def main():
     config = {"playback_speed": 30,
               "cascade" : {"path" : cascade_paths[args["cascade"]],
                             "scale_factor"   :1.1,
-                            "min_neighbours" : 9}}
+                            "min_neighbours" : 13}}
      
     # Camera ID 0 is usually webcam
     cap = cv2.VideoCapture(0)
-    fps = None
 
     if not cap.isOpened():
         print("Cannot open camera")
         exit()
+
+    prev_frame_time = 0
+    next_frame_time = 0
+    fps = 0
+
+    cv2.namedWindow("Image GUI",cv2.WINDOW_NORMAL)
+    cv2.resizeWindow("Image GUI",600,500)
+    # cv2.moveWindow("Image GUI",1080,0)
     #-----------------------------
     # Processing
     #-----------------------------
@@ -101,10 +108,38 @@ def main():
         # Iterating through rectangles of detected faces 
         for (x, y, w, h) in faces_rect: 
             cv2.rectangle(image_gui, (x, y), (x+w, y+h), (0, 255, 0), 2) 
+
+
+        if tracker_vars["initBB"] is None and len(faces_rect) != 0:
+            tracker_vars["initBB"] = faces_rect[0]
+            tracker_vars["tracker"].init(image_source,tracker_vars["initBB"])
+        
+        # * Tracking
+        # check to see if we are currently tracking an object
+        if tracker_vars["initBB"] is not None:
+            # grab the new bounding box coordinates of the object
+            (success, box) = tracker.update(image_source)
+            print(success)
+                
+                # check to see if the tracking was a success
+            if success:
+                (x, y, w, h) = [int(v) for v in box]
+                cv2.rectangle(image_gui, (x, y), (x + w, y + h),
+                    (255, 255, 0), 2)
+
         #-----------------------------
         # Visualization
         #-----------------------------
-        cv2.imshow('frame', image_gui)
+
+        # *Calculating fps
+        next_frame_time = time.time()
+        fps = 1/(next_frame_time-prev_frame_time)
+        prev_frame_time = next_frame_time
+
+        image_gui = cv2.putText(image_gui,f'{fps:.1f} FPS' , (20, 20), cv2.FONT_HERSHEY_SIMPLEX, 
+                        0.7, (0,255,0), 2, cv2.LINE_AA)
+
+        cv2.imshow('Image GUI', image_gui)
 
         keyboardActions(config,image_gui)
 
