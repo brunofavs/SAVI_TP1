@@ -63,7 +63,7 @@ def main():
     config = {"playback_speed": 30,
               "cascade" : {"path" : cascade_paths[args["cascade"]],
                             "scale_factor"   :1.1, # Smaller is more accurate but slower
-                            "min_neighbours" : 13}} # More neighbours means more accurate detections
+                            "min_neighbours" : 15}} # More neighbours means more accurate detections
      
     # Camera ID 0 is usually webcam
     cap = cv2.VideoCapture(0)
@@ -79,6 +79,14 @@ def main():
     cv2.namedWindow("Image GUI",cv2.WINDOW_NORMAL)
     cv2.resizeWindow("Image GUI",600,500)
     # cv2.moveWindow("Image GUI",1080,0)
+    
+    face_recognizer_model = cv2.face.LBPHFaceRecognizer_create()
+    first_train = True
+    
+    train_labels = []
+    train_images = []
+    
+
     #-----------------------------
     # Processing
     #-----------------------------
@@ -97,21 +105,38 @@ def main():
         image_gui = deepcopy(image_source)
         
         # Converting image to grayscale 
-        gray_img = cv2.cvtColor(image_source, cv2.COLOR_BGR2GRAY) 
+        image_gray = cv2.cvtColor(image_source, cv2.COLOR_BGR2GRAY) 
         
         # * Detecting
-
+        faces_rois = []
         # Loading the required haar-cascade xml classifier file 
         haar_cascade = cv2.CascadeClassifier(config["cascade"]["path"]) 
         
         # Applying the face detection method on the grayscale image 
-        faces_rect = haar_cascade.detectMultiScale(gray_img, config["cascade"]["scale_factor"], config["cascade"]["min_neighbours"]) 
+        faces_rect = haar_cascade.detectMultiScale(image_gray, config["cascade"]["scale_factor"], config["cascade"]["min_neighbours"]) 
         
         # Iterating through rectangles of detected faces 
         for (x, y, w, h) in faces_rect: 
             cv2.rectangle(image_gui, (x, y), (x+w, y+h), (0, 255, 0), 2) 
+            faces_rois.append(image_gray[y:y+h,x:x+w])
+
+        # * Preprocessing of the NN inputs
+
+
+        # * The first face will be on a completly untrained model, which crashes, so the first one has necessarily to be training
+        if first_train and len(faces_rect) != 0:
+            train_labels.append(1)
+            train_images.append(faces_rois[0])
+
+            face_recognizer_model.train(train_images,np.array(train_labels))
+            first_train = False
+
 
         # * Use the LPB model to predict which face it should be
+        if len(faces_rect) != 0:
+            face_roi = faces_rois[0]
+            label, confidence = face_recognizer_model.predict(face_roi)
+            print(label,confidence)
 
         # * Initially the untrained model shall not make confident predictions
         # * Thus we can assume all predictions with less than a certain confidence are new faces
