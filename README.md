@@ -10,7 +10,7 @@ The program is a Face Recognition system, that also uses tracking.
 
 ## **Features:**
 - Detect multiple faces
-- Recognize all faces from both a pre-existing or a realtime updated database
+- Recognize all faces from either a pre-existing or a realtime updated database
 - Show the used database for recognition in realtime
 - Identify recognized faces, and add unknown ones to the database
 - Greet known faces with "Hello", using TTS (Text to Speech)
