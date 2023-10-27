@@ -99,6 +99,8 @@ def main():
         # Converting image to grayscale 
         gray_img = cv2.cvtColor(image_source, cv2.COLOR_BGR2GRAY) 
         
+        # * Detecting
+
         # Loading the required haar-cascade xml classifier file 
         haar_cascade = cv2.CascadeClassifier(config["cascade"]["path"]) 
         
@@ -108,6 +110,14 @@ def main():
         # Iterating through rectangles of detected faces 
         for (x, y, w, h) in faces_rect: 
             cv2.rectangle(image_gui, (x, y), (x+w, y+h), (0, 255, 0), 2) 
+
+        # * Use the LPB model to predict which face it should be
+
+        # * Initially the untrained model shall not make confident predictions
+        # * Thus we can assume all predictions with less than a certain confidence are new faces
+
+        # * The tracked face should belong to the same person, hence all the tracked ROI's should be used to train the model
+        # * to update the initially random weights
 
 
         if tracker_vars["initBB"] is None and len(faces_rect) != 0:
