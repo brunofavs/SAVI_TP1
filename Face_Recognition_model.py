@@ -52,7 +52,7 @@ def main():
             roi_gray = cv2.resize(roi_gray,(500,500))
 
             training_data.append(roi_gray)
-            labels.append(int(f_id))
+            labels.append((f_id))
 
             model = cv2.face.LBPHFaceRecognizer_create()
             model.train(np.asarray(training_data),np.asarray(labels))
