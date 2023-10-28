@@ -89,6 +89,8 @@ def main():
     train_labels = []
     train_images = []
 
+    last_new_label = 1
+
     # -----------------------------
     # Processing
     # -----------------------------
@@ -136,8 +138,12 @@ def main():
 
                 face_recognizer_model.train(train_images, np.array(train_labels))
 
+                # face_recognizer_model.write("model.yaml")
+
                 bbox = faces_rect[0]
-                trackers.add(tracker_type,image_source,bbox,1)
+                trackers.add(tracker_type,image_source,bbox,last_new_label)
+                
+                last_new_label += 1
 
 
                 first_train = False
@@ -145,18 +151,32 @@ def main():
 
 
             # * Use the LPB model to predict which face it should be
-            face_roi = faces_rois[0]
-            label, confidence = face_recognizer_model.predict(face_roi)
-            # print(f'Confidence is {confidence}')
-            # print(f'Label is {label}')
+            # face_roi = faces_rois[0]
 
-            # * Initially the untrained model shall not make confident predictions
-            # * Thus we can assume all predictions with less than a certain confidence are new faces
+            for face_roi,face_rect in zip(faces_rois,faces_rect):
+                
+                label, confidence = face_recognizer_model.predict(face_roi)
+                print(f'Confidence is {confidence}')
+                print(f'Label is {label}')
 
-            if confidence > config["new_face_threshold"]:
-                # TODO Train a new face
-                bbox = faces_rect[0]
-                trackers.add(tracker_type,image_source,bbox)
+                # * Initially the untrained model shall not make confident predictions
+                # * Thus we can assume all predictions with less than a certain confidence are new faces
+
+                if confidence > config["new_face_threshold"]:
+                    print("Adding new face")
+                    bbox = face_rect
+                    trackers.add(tracker_type,image_source,bbox,last_new_label)
+
+                    # TODO Train a new face
+
+                    face_recognizer_model.update([face_roi], np.asarray([2]))  
+                    last_new_label +=1
+
+                    # face_recognizer_model.write("model2.yaml")
+
+
+
+
 
 
         # * Tracking
@@ -183,22 +203,23 @@ def main():
                     # face_recognizer_model.update([np.array(train_images[-1])], np.array(train_labels[-1]))
                     
                     # face_recognizer_model.update(np.asarray(train_images)[-1,:,:], trackers.trackers[track_idx]["label"]) 
-                    face_recognizer_model.update([tracking_rois[-1]], np.asarray([trackers.trackers[track_idx]["label"]]))  
+                    # face_recognizer_model.update([tracking_rois[-1]], np.asarray([trackers.trackers[track_idx]["label"]]))  
 
-                    # label2, confidence2 = face_recognizer_model.predict(train_images[-1])
-                    label2, confidence2 = face_recognizer_model.predict(face_roi)
+                    # face_recognizer_model.write("model3.yaml")
+
+                    label2, confidence2 = face_recognizer_model.predict(tracking_rois[-1])
                     label1, confidence1 = face_recognizer_model.predict(face_roi)
                     cv2.imshow("Ti1",train_images[-1])
                     cv2.imshow("fr1",face_roi)
 
 
-                    print(f'Tracker ROI')
-                    print(f'Confidence is {confidence2}')
-                    print(f'Label is {label2}')
+                    # print(f'Tracker ROI')
+                    # print(f'Confidence is {confidence2}')
+                    # print(f'Label is {label2}')
 
-                    print(f'Face ROI')
-                    print(f'Confidence is {confidence1}')
-                    print(f'Label is {label1}')
+                    # print(f'Face ROI')
+                    # print(f'Confidence is {confidence1}')
+                    # print(f'Label is {label1}')
                     
             
 
