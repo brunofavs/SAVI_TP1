@@ -6,20 +6,21 @@ Repository for Advanced Computer Vision Systems course at University of Aveiro
 
 This repository was created for evaluation at Industrial Vision Advanced Systems "SAVI 23-24 Trabalho prático 1".
 
-The program is a Face Recognition system which also uses tracking.
+The program is a Face Recognition system, that also uses tracking.
 
 ## **Features:**
-- Detect faces
-- Recognize faces from a pre-existing database
-- Utilize the database in real time
-- Identify existing faces on the database, and collect unknown ones
+- Detect multiple faces
+- Recognize all faces from either a pre-existing or a realtime updated database
+- Show the used database for recognition in realtime
+- Identify recognized faces, and add unknown ones to the database
 - Greet known faces with "Hello", using TTS (Text to Speech)
+- Ask for identification of an unknown face detected, using TTS and the terminal
 - Track every person and maintain a tracker over the person, even when not recognizable.
 
 
 ## **Usage:**
 
-Run "main.py" on the terminal and press x to start capturing the video on your webcam.
+Enter 'src' directory and run main.py on the terminal. Every time the program asks to identify a new person, their name should be inputed in the terminal, then press Enter. (((((((((((To open and view the database, press 1. To exit the program press Escape.)))))))))))
 
 ## How does it work?
 ...

@@ -23,7 +23,7 @@ def face_detector(img):
 
     return img,roi
 
-name = {0:'Mestre',1:'Virat Kohli'}
+name = {0:'Mestre',1:'Bruno',2:'Alexandre'}
 
 
 def main():
