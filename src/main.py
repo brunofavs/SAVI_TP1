@@ -52,7 +52,8 @@ def main():
         "mosse": cv2.legacy.TrackerMOSSE_create}  # Fastest
 
     # * Creating tracker based on argument parsed
-    tracker_type = trackers_algorigthms[args["tracker"]]()
+    tracker_type = trackers_algorigthms[args["tracker"]]
+
 
     trackers = Trackers()
 
@@ -65,7 +66,7 @@ def main():
               "cascade": {"path": cascade_paths[args["cascade"]],
                           "scale_factor": 1.1,  # Smaller is more accurate but slower
                           "min_neighbours": 9},  # More neighbours means more accurate detections
-              "new_face_threshold": 50}
+              "new_face_threshold": 75}
 
     # Camera ID 0 is usually webcam
     cap = cv2.VideoCapture(0)
@@ -131,6 +132,10 @@ def main():
                 train_images.append(faces_rois[0])
 
                 face_recognizer_model.train(train_images, np.array(train_labels))
+
+                bbox = faces_rect[0]
+                trackers.add(tracker_type,image_source,bbox)
+
                 first_train = False
 
 
@@ -138,7 +143,7 @@ def main():
             # * Use the LPB model to predict which face it should be
             face_roi = faces_rois[0]
             label, confidence = face_recognizer_model.predict(face_roi)
-            # print(label, confidence)
+            print(f'Confidence is {confidence}')
 
             # * Initially the untrained model shall not make confident predictions
             # * Thus we can assume all predictions with less than a certain confidence are new faces
@@ -155,14 +160,14 @@ def main():
         if trackers.latest_bboxs is not None:
             # grab the new bounding box coordinates of the object
             (successes, boxes) = trackers.update(image_source)
-            # print(f'Sucessess var is {successes}')
+            print(f'Sucessess var is {successes}')
 
-            # for success,box in zip(successes,boxes):
-            #     # check to see if the tracking was a success
-            #     if success:
-            #         (x, y, w, h) = [int(v) for v in box]
-            #         cv2.rectangle(image_gui, (x, y), (x + w, y + h),
-            #                     (255, 255, 0), 2)
+            for success,box in zip(successes,boxes):
+                # check to see if the tracking was a success
+                if success:
+                    (x, y, w, h) = [int(v) for v in box]
+                    cv2.rectangle(image_gui, (x, y), (x + w, y + h),
+                                (255, 255, 0), 2)
             #         # * The tracked face should belong to the same person, hence all the tracked ROI's should be used to train the model
             #         # * to update the initially random weights
             #         # TODO Train model on specific label
