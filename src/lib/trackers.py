@@ -30,36 +30,44 @@ class Trackers():
         "kcf": cv2.TrackerKCF_create,   # A bit faster than csrt but less accurate
         "mosse": cv2.legacy.TrackerMOSSE_create}  # Fastest
 
-    def __init__(self,trackers = []):
+    def __init__(self, trackers=[]):
         self.trackers = trackers
         self.latest_bboxs = []
 
-    def add(self,tracker,img,bbox):
+    # TODO add label too to know what the tracker is tracking
+    def add(self, tracker, img, bbox, label):
 
         assert tracker in Trackers.trackers_algorigthms.values()
 
+        self.trackers.append({"tracker": tracker(),
+                              "bbox": bbox,
+                              "label": label})
 
-        self.trackers.append(tracker())
-
-        self.trackers[-1].init(img,bbox)
+        self.trackers[-1]["tracker"].init(img, bbox)
 
         self.latest_bboxs.append(bbox)
 
-        
+    def update(self, image):
 
-    def update(self,image):
-        
         sucesses = []
         bboxs = []
 
-        for tracker in self.trackers:
-            sucess,bbox = tracker.update(image) 
+        for tracker_dict in self.trackers:
+
+            # print(tracker_dict)
+
+            tracker = tracker_dict["tracker"]
+
+            sucess, bbox = tracker.update(image)
+
+            tracker_dict["bbox"] = bbox
+
             sucesses.append(sucess)
             bboxs.append(bbox)
 
         self.latest_bboxs = bboxs
 
-        return sucesses,self.latest_bboxs
-    
+        return sucesses, self.latest_bboxs
+
     def draw(self):
         pass
