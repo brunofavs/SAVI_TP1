@@ -7,14 +7,29 @@ import glob
 import numpy as np
 import imutils
 
+width = 350
+height = 450
+dim = (width, height)
+
+
 def main():
-    import cv2
-    import numpy as np
+    
+    
+    
+    
     img1 = cv2.imread('/home/mestre/Desktop/SAVI/REPO_eu_SAVI/testeclone/SAVI_TP1/Face_samples_dataset/0/WhatsApp Image 2023-10-26 at 23.10.45.jpeg')
     img2 = cv2.imread('/home/mestre/Desktop/SAVI/REPO_eu_SAVI/testeclone/SAVI_TP1/Face_samples_dataset/0/WhatsApp Image 2023-10-26 at 23.11.17.jpeg')
-    vis1 = np.concatenate((img1, img2), axis=1)
+    
+    resized1 = cv2.resize(img1, dim, interpolation = cv2.INTER_AREA)
+    resized2 = cv2.resize(img2, dim, interpolation = cv2.INTER_AREA)
+    
+    vis1 = np.concatenate((img1, img2), axis = 1)
+    vis2 = np.concatenate((resized1,resized2), axis = 1)
+    
+    
     cv2.imwrite('out.png', vis1)
     cv2.imshow('database',vis1)
+    cv2.imshow('databaseconcatenated',vis2)
     cv2.waitKey(0)
     
     #h1, w1 = img1.shape[:2]
