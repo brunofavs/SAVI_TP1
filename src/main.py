@@ -153,31 +153,33 @@ def main():
         if len(faces_rect) != 0 :
         # * The first face will be on a completly untrained model, which crashes, so the first one has necessarily to be training
             if first_train:
-                train_labels.append(1)
-                train_images.append(faces_rois[0])
-
-                face_recognizer_model.train(train_images, np.array(train_labels))
-
                 # person_name = input("Hello, whats your name\n") 
-                
                 play_welcome()
                 person_name = name_prompt()
 
+                if person_name:
+                    train_labels.append(1)
+                    train_images.append(faces_rois[0])
 
-                # TODO Cancel prompt if false positive
-                face_recognizer_model.setLabelInfo(last_new_label,person_name)
+                    face_recognizer_model.train(train_images, np.array(train_labels))
 
-                bbox = faces_rect[0]
-                trackers.add(tracker_type,image_source,bbox,last_new_label)
 
-                createPersonData(faces_rois[0],last_new_label,face_recognizer_model)
-                
-                print(f'Saving {person_name} information') 
+                    # TODO Cancel prompt if false positive
+                    face_recognizer_model.setLabelInfo(last_new_label,person_name)
 
-                
-                last_new_label += 1
+                    bbox = faces_rect[0]
+                    trackers.add(tracker_type,image_source,bbox,last_new_label)
 
-                first_train = False
+                    createPersonData(faces_rois[0],last_new_label,face_recognizer_model)
+                    
+                    print(f'Saving {person_name} information') 
+
+                    
+                    last_new_label += 1
+
+                    first_train = False
+                else:
+                    print("False positive, skipping")
 
 
 
@@ -185,6 +187,9 @@ def main():
 
             for face_roi,face_rect in zip(faces_rois,faces_rect):
                 
+                if first_train:
+                    break
+
                 label, confidence = face_recognizer_model.predict(face_roi)
                 print(f'Confidence is {confidence}')
                 print(f'Label is {label}')
@@ -214,22 +219,26 @@ def main():
                 # * Thus we can assume all predictions with less than a certain confidence are new faces
 
                 if confidence > config["new_face_threshold"]:
-                    print("Adding new face")
-                    bbox = face_rect
-                    trackers.add(tracker_type,image_source,bbox,last_new_label)
-
                     play_welcome()
                     person_name = name_prompt()
-
-                    face_recognizer_model.setLabelInfo(last_new_label,person_name)
-
-                    face_recognizer_model.update([face_roi], np.asarray([last_new_label]))  
-
-                    createPersonData(face_roi,last_new_label,face_recognizer_model)
                     
-                    print(f'Saving {person_name} information') 
+                    if person_name:
+                        print("Adding new face")
+                        bbox = face_rect
+                        trackers.add(tracker_type,image_source,bbox,last_new_label)
 
-                    last_new_label +=1
+
+                        face_recognizer_model.setLabelInfo(last_new_label,person_name)
+
+                        face_recognizer_model.update([face_roi], np.asarray([last_new_label]))  
+
+                        createPersonData(face_roi,last_new_label,face_recognizer_model)
+                        
+                        print(f'Saving {person_name} information') 
+
+                        last_new_label +=1
+                    else:
+                        print("False positive, skipping")
 
 
         # * Tracking
