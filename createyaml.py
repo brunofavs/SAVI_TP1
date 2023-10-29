@@ -2,9 +2,6 @@
 
 import yaml
 
-
-
-    
 # data_yaml = """
 # - 'pedro'
 # - '/home/mestre/Desktop/SAVI/REPO_eu_SAVI/testeclone/SAVI_TP1

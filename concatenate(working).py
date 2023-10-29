@@ -26,12 +26,15 @@ def main():
     dim = (width, height)
     dim1 = (200, 250)
     
+    # SPECIFIC DIMENSIONS SET BY US
     resized1 = cv2.resize(img1, dim1, interpolation = cv2.INTER_AREA)
     resized2 = cv2.resize(img2, dim1, interpolation = cv2.INTER_AREA)
     
+    # ASPECT RATIO OF ONE OF THE PHOTOS
     aspected1 = cv2.resize(img1, dim, interpolation = cv2.INTER_AREA)
     aspected2 = cv2.resize(img2, dim, interpolation = cv2.INTER_AREA)
     
+    # JOIN THE IMAGES SIDE BY SIDE X
     vis1 = np.concatenate((img1, img2), axis = 1)
     vis2 = np.concatenate((resized1,resized2), axis = 1)
     vis3 = np.concatenate((aspected1,aspected2), axis = 1)
