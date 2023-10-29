@@ -32,7 +32,7 @@ import time
 from lib.keyboardActions import *
 from lib.trackers import Trackers
 from lib.createPersonData import createPersonData
-
+from lib.audio_pessoa_desconhecida import play_welcome,name_prompt
 
 def main():
     # -----------------------------
@@ -138,7 +138,12 @@ def main():
 
                 face_recognizer_model.train(train_images, np.array(train_labels))
 
-                person_name = input("Hello, whats your name\n") 
+                # person_name = input("Hello, whats your name\n") 
+                
+                play_welcome()
+                person_name = name_prompt()
+
+
                 # TODO Cancel prompt if false positive
                 face_recognizer_model.setLabelInfo(last_new_label,person_name)
 
@@ -161,8 +166,8 @@ def main():
             for face_roi,face_rect in zip(faces_rois,faces_rect):
                 
                 label, confidence = face_recognizer_model.predict(face_roi)
-                # print(f'Confidence is {confidence}')
-                # print(f'Label is {label}')
+                print(f'Confidence is {confidence}')
+                print(f'Label is {label}')
 
                 # * Iterate through trackers and see if any non active one matches the label
 
@@ -190,7 +195,9 @@ def main():
                     bbox = face_rect
                     trackers.add(tracker_type,image_source,bbox,last_new_label)
 
-                    person_name = input("Hello, whats your name\n") 
+                    play_welcome()
+                    person_name = name_prompt()
+
                     face_recognizer_model.setLabelInfo(last_new_label,person_name)
 
                     face_recognizer_model.update([face_roi], np.asarray([last_new_label]))  
