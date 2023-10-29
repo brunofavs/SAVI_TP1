@@ -30,18 +30,23 @@ class Trackers():
         "kcf": cv2.TrackerKCF_create,   # A bit faster than csrt but less accurate
         "mosse": cv2.legacy.TrackerMOSSE_create}  # Fastest
 
+    reInit_counter_threshold = 10
+
     def __init__(self, trackers=[]):
         self.trackers = trackers
         self.latest_bboxs = []
+        self.latest_sucesses = []
+        
 
-    # TODO add label too to know what the tracker is tracking
     def add(self, tracker, img, bbox, label):
 
         assert tracker in Trackers.trackers_algorigthms.values()
 
         self.trackers.append({"tracker": tracker(),
                               "bbox": bbox,
-                              "label": label})
+                              "label": label,
+                              "ready2reInit" : False,
+                              "reInit_counter":0})
 
         self.trackers[-1]["tracker"].init(img, bbox)
 
@@ -62,6 +67,23 @@ class Trackers():
 
             sucesses.append(sucess)
             bboxs.append(bbox)
+
+        # * Seeing if trackers are not active and getting them ready for reInitialization
+        for track_idx, success, in enumerate(self.latest_sucesses):
+            # check to see if the tracking was a success
+            if not success:
+                if self.trackers[track_idx]["ready2reInit"] == True:
+                    continue
+                
+                self.trackers[track_idx]["reInit_counter"] += 1
+
+                if self.trackers[track_idx]["reInit_counter"] == Trackers.reInit_counter_threshold:
+                    self.trackers[track_idx]["ready2reInit"] = True
+            else:
+                # If it gets re detected reset
+                self.trackers[track_idx]["reInit_counter"] = 0
+                self.trackers[track_idx]["ready2reInit"] = False
+                
 
         self.latest_bboxs = bboxs
         self.latest_sucesses = sucesses

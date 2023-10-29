@@ -65,7 +65,7 @@ def main():
     config = {"playback_speed": 30,
               "cascade": {"path": cascade_paths[args["cascade"]],
                           "scale_factor": 1.1,  # Smaller is more accurate but slower
-                          "min_neighbours": 15},  # More neighbours means more accurate detections
+                          "min_neighbours": 17},  # More neighbours means more accurate detections
               "new_face_threshold": 75}
 
     # Camera ID 0 is usually webcam
@@ -144,23 +144,38 @@ def main():
 
                 bbox = faces_rect[0]
                 trackers.add(tracker_type,image_source,bbox,last_new_label)
-
                 
                 last_new_label += 1
-
 
                 first_train = False
 
 
 
             # * Use the LPB model to predict which face it should be
-            # face_roi = faces_rois[0]
 
             for face_roi,face_rect in zip(faces_rois,faces_rect):
                 
                 label, confidence = face_recognizer_model.predict(face_roi)
-                print(f'Confidence is {confidence}')
-                print(f'Label is {label}')
+                # print(f'Confidence is {confidence}')
+                # print(f'Label is {label}')
+
+                # * Iterate through trackers and see if any non active one matches the label
+
+                for tracker_dict in trackers.trackers:
+
+                    if not tracker_dict["ready2reInit"]:
+                        continue
+
+                    tracker_label = tracker_dict["label"]
+
+                    # * Reinitialize tracker
+                    if tracker_label == label:
+                        tracker_dict["tracker"] = tracker_type()
+                        tracker_dict["tracker"].init(image_source,face_rect)
+
+                        tracker_dict["reInit_counter"] = 0
+                        tracker_dict["ready2reInit"] = False
+
 
                 # * Initially the untrained model shall not make confident predictions
                 # * Thus we can assume all predictions with less than a certain confidence are new faces
@@ -173,12 +188,8 @@ def main():
                     person_name = input("Hello, whats your name\n") 
                     face_recognizer_model.setLabelInfo(last_new_label,person_name)
 
-                    face_recognizer_model.update([face_roi], np.asarray([2]))  
+                    face_recognizer_model.update([face_roi], np.asarray([last_new_label]))  
                     last_new_label +=1
-
-
-
-
 
 
         # * Tracking
@@ -193,9 +204,6 @@ def main():
                 if success:
                     (x, y, w, h) = [int(v) for v in box]
                     tracking_rois.append(image_gray[y:y+h, x:x+w])
-
-                    cv2.rectangle(image_gui, (x, y), (x + w, y + h),
-                                (255, 255, 0), 2)
                     
                     # * The tracked face should belong to the same person, hence all the tracked ROI's should be used to train the model
                     # * to update the initially random weights
