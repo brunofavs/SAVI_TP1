@@ -74,6 +74,7 @@ def main():
     yamls_path = '../files/yamls'
     imgs_path = '../files/images'
 
+    # * Cleaning old execution files
     for yaml_file in os.listdir(yamls_path):
         yaml_file_path = f'{yamls_path}/{yaml_file}'
 
@@ -83,6 +84,10 @@ def main():
         img_file_path = f'{imgs_path}/{img_file}'
 
         os.remove(img_file_path)
+
+    for sound_file in os.listdir("."):
+       if sound_file.endswith(".mp3"):
+            os.remove(sound_file)
 
     # Camera ID 0 is usually webcam
     cap = cv2.VideoCapture(0)

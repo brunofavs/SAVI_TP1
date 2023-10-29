@@ -59,9 +59,7 @@ def createImgGrid():
 
         grid = np.concatenate((grid,image),axis=1) 
 
-    cv2.namedWindow("Grid", cv2.WINDOW_NORMAL)
-    cv2.imshow("Grid",grid)
-
+    return grid
 
     # for idx,image in enumerate(images_array):
         # cv2.imshow(str(idx),image)

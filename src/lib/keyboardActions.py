@@ -20,6 +20,7 @@ Class objets -> camelCase
 
 import cv2
 import numpy as np
+from lib.showDatabase import createImgGrid
 
 def keyboardActions(config, image_gui):
 
@@ -30,3 +31,7 @@ def keyboardActions(config, image_gui):
         print("Quitting program")
         cv2.destroyAllWindows
         exit()
+
+    if pressed_key == ord('d'):
+        grid = createImgGrid()
+        cv2.imshow("Database",grid)
