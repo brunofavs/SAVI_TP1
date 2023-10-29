@@ -4,12 +4,11 @@ import yaml
 import os
 import cv2
 
-data_path = './Face_samples_dataset/yamls'
+data_path = 'files/yamls'
 names=[]
 paths=[]
 images={}
 def main():
-    
     for path, subdirname, filenames in os.walk(data_path):
         # print('path:',path)
         # print('subdirname:',subdirname)
@@ -31,10 +30,11 @@ def main():
                 
                 names.append(data[0])
                 paths.append(data[1])
+                
         print(names,paths)
         
-        for x in range(len(names)):
-            images["img{0}".format(x)] = cv2.imread(path[x])
+       # for x in range(len(names)):
+        #    images["img{0}".format(x)] = cv2.imread(path[x])
             
         print(images)
             
