@@ -31,6 +31,7 @@ import time
 
 from lib.keyboardActions import *
 from lib.trackers import Trackers
+from lib.createPersonData import createPersonData
 
 
 def main():
@@ -120,8 +121,7 @@ def main():
         haar_cascade = cv2.CascadeClassifier(config["cascade"]["path"])
 
         # Applying the face detection method on the grayscale image
-        faces_rect = haar_cascade.detectMultiScale(
-            image_gray, config["cascade"]["scale_factor"], config["cascade"]["min_neighbours"])
+        faces_rect = haar_cascade.detectMultiScale(image_gray, config["cascade"]["scale_factor"], config["cascade"]["min_neighbours"])
 
         # Iterating through rectangles of detected faces
         for (x, y, w, h) in faces_rect:
@@ -144,6 +144,11 @@ def main():
 
                 bbox = faces_rect[0]
                 trackers.add(tracker_type,image_source,bbox,last_new_label)
+
+                createPersonData(faces_rois[0],last_new_label,face_recognizer_model)
+                
+                print(f'Saving {person_name} information') 
+
                 
                 last_new_label += 1
 
@@ -189,6 +194,11 @@ def main():
                     face_recognizer_model.setLabelInfo(last_new_label,person_name)
 
                     face_recognizer_model.update([face_roi], np.asarray([last_new_label]))  
+
+                    createPersonData(face_roi,last_new_label,face_recognizer_model)
+                    
+                    print(f'Saving {person_name} information') 
+
                     last_new_label +=1
 
 
