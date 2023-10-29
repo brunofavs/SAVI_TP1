@@ -66,6 +66,9 @@ def name_prompt():
 
     button_save = tk.Button(root, text="Save Name", command=partial(play_name,entry = entry,root = root,name_var = name_var))
     button_save.pack()
+
+    # root.update()
+    # root.update_idletasks()
     root.mainloop()
 
     return name_var.get()

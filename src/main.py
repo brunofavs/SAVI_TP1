@@ -33,6 +33,7 @@ from lib.keyboardActions import *
 from lib.trackers import Trackers
 from lib.createPersonData import createPersonData
 from lib.audio_pessoa_desconhecida import play_welcome,name_prompt
+from lib.audio_pessoa_conhecida import hello_again
 
 def main():
     # -----------------------------
@@ -58,9 +59,9 @@ def main():
 
     trackers = Trackers()
 
-    cascade_paths = ["../files/haarcascade_frontalface_default.xml",
-                     "../files/haarcascade_frontalface_alt.xml",
-                     "../files/haarcascade_frontalface_alt2.xml"
+    cascade_paths = ["../files/cascades/haarcascade_frontalface_default.xml",
+                     "../files/cascades/haarcascade_frontalface_alt.xml",
+                     "../files/cascades/haarcascade_frontalface_alt2.xml"
                      ]
 
     config = {"playback_speed": 30,
@@ -183,6 +184,9 @@ def main():
                         tracker_dict["tracker"] = tracker_type()
                         tracker_dict["tracker"].init(image_source,face_rect)
 
+                        person_name = face_recognizer_model.getLabelInfo(tracker_label)
+                        hello_again(person_name)
+
                         tracker_dict["reInit_counter"] = 0
                         tracker_dict["ready2reInit"] = False
 
@@ -213,7 +217,7 @@ def main():
         # check to see if we are currently tracking an object
         if trackers.latest_bboxs is not None:
             # grab the new bounding box coordinates of the object
-            (successes, boxes) = trackers.update(image_source)
+            (successes, boxes) = trackers.update(image_source,face_recognizer_model)
 
             for track_idx,(success,box) in enumerate(zip(successes,boxes)): 
                 # check to see if the tracking was a success

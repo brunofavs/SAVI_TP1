@@ -20,6 +20,7 @@ Class objets -> camelCase
 
 import cv2
 import numpy as np
+from lib.audio_pessoa_conhecida import hello_again,goodbye
 
 
 class Trackers():
@@ -52,7 +53,7 @@ class Trackers():
 
         self.latest_bboxs.append(bbox)
 
-    def update(self, image):
+    def update(self, image,face_model):
 
         sucesses = []
         bboxs = []
@@ -71,15 +72,22 @@ class Trackers():
         # * Seeing if trackers are not active and getting them ready for reInitialization
         for track_idx, success, in enumerate(self.latest_sucesses):
             # check to see if the tracking was a success
+            person_name = face_model.getLabelInfo(self.trackers[track_idx]["label"])
+            
             if not success:
-                if self.trackers[track_idx]["ready2reInit"] == True:
-                    continue
+                if self.trackers[track_idx]["ready2reInit"] == False:
                 
-                self.trackers[track_idx]["reInit_counter"] += 1
+                    self.trackers[track_idx]["reInit_counter"] += 1
 
-                if self.trackers[track_idx]["reInit_counter"] == Trackers.reInit_counter_threshold:
-                    self.trackers[track_idx]["ready2reInit"] = True
+                    if self.trackers[track_idx]["reInit_counter"] == Trackers.reInit_counter_threshold:
+                        self.trackers[track_idx]["ready2reInit"] = True
+
+                        goodbye(person_name)
+
             else:
+                if self.trackers[track_idx]["ready2reInit"] == True:
+                    hello_again(person_name)
+
                 # If it gets re detected reset
                 self.trackers[track_idx]["reInit_counter"] = 0
                 self.trackers[track_idx]["ready2reInit"] = False
