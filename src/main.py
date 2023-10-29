@@ -22,6 +22,7 @@ Class objets -> camelCase
 # -----------------------------
 
 import argparse
+import os
 import cv2
 from copy import deepcopy
 from functools import partial
@@ -69,6 +70,19 @@ def main():
                           "scale_factor": 1.1,  # Smaller is more accurate but slower
                           "min_neighbours": 17},  # More neighbours means more accurate detections
               "new_face_threshold": 75}
+
+    yamls_path = '../files/yamls'
+    imgs_path = '../files/images'
+
+    for yaml_file in os.listdir(yamls_path):
+        yaml_file_path = f'{yamls_path}/{yaml_file}'
+
+        os.remove(yaml_file_path)
+
+    for img_file in os.listdir(imgs_path):
+        img_file_path = f'{imgs_path}/{img_file}'
+
+        os.remove(img_file_path)
 
     # Camera ID 0 is usually webcam
     cap = cv2.VideoCapture(0)
