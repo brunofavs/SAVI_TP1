@@ -9,7 +9,6 @@ import imutils
 import os
 
 
-labels = []
 data_path = '/home/mestre/Desktop/SAVI/REPO_eu_SAVI/testeclone/SAVI_TP1/Face_samples_dataset/'
 scale = 0.25
 
