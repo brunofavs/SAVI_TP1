@@ -4,17 +4,21 @@ import yaml
 import os
 import cv2
 
-data_path = './Face_samples_dataset/yamls'
+yaml_path = '../files/yamls'
+img_path = '../files/images'
+
+main_path = "../"
+
+os.chdir(main_path)
 
 names=[]
 paths=[]
 images={}
 def main():
     
-    for path, subdirname, filenames in os.walk(data_path):
-        # print('path:',path)
-        # print('subdirname:',subdirname)
-        print('filenames:',filenames)
+    for yaml_file in os.listdir(yaml_path):
+        print('filenames:',yaml_file)
+        continue
 
 
 

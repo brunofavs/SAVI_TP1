@@ -9,6 +9,7 @@ names=[]
 paths=[]
 images={}
 def main():
+    
     for path, subdirname, filenames in os.walk(data_path):
         # print('path:',path)
         # print('subdirname:',subdirname)
