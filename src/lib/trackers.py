@@ -54,8 +54,6 @@ class Trackers():
 
         for tracker_dict in self.trackers:
 
-            # print(tracker_dict)
-
             tracker = tracker_dict["tracker"]
 
             sucess, bbox = tracker.update(image)
@@ -66,8 +64,20 @@ class Trackers():
             bboxs.append(bbox)
 
         self.latest_bboxs = bboxs
+        self.latest_sucesses = sucesses
 
-        return sucesses, self.latest_bboxs
+        return self.latest_sucesses, self.latest_bboxs
 
-    def draw(self):
-        pass
+    def draw(self, image, face_model):
+
+        for track_idx, (success, box) in enumerate(zip(self.latest_sucesses, self.latest_bboxs)):
+            # check to see if the tracking was a success
+            if success:
+                (x, y, w, h) = [int(v) for v in box]
+
+                person_name = face_model.getLabelInfo(self.trackers[track_idx]["label"])
+
+                cv2.rectangle(image, (x, y), (x + w, y + h),
+                              (255, 255, 0), 2)
+                image = cv2.putText(image, f'{person_name}', (x+20,y-10), cv2.FONT_HERSHEY_SIMPLEX,
+                                        0.7, (0, 0, 255), 2, cv2.LINE_AA)

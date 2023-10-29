@@ -138,10 +138,13 @@ def main():
 
                 face_recognizer_model.train(train_images, np.array(train_labels))
 
-                # face_recognizer_model.write("model.yaml")
+                person_name = input("Hello, whats your name\n") 
+                # TODO Cancel prompt if false positive
+                face_recognizer_model.setLabelInfo(last_new_label,person_name)
 
                 bbox = faces_rect[0]
                 trackers.add(tracker_type,image_source,bbox,last_new_label)
+
                 
                 last_new_label += 1
 
@@ -167,12 +170,11 @@ def main():
                     bbox = face_rect
                     trackers.add(tracker_type,image_source,bbox,last_new_label)
 
-                    # TODO Train a new face
+                    person_name = input("Hello, whats your name\n") 
+                    face_recognizer_model.setLabelInfo(last_new_label,person_name)
 
                     face_recognizer_model.update([face_roi], np.asarray([2]))  
                     last_new_label +=1
-
-                    # face_recognizer_model.write("model2.yaml")
 
 
 
@@ -187,6 +189,7 @@ def main():
 
             for track_idx,(success,box) in enumerate(zip(successes,boxes)): 
                 # check to see if the tracking was a success
+
                 if success:
                     (x, y, w, h) = [int(v) for v in box]
                     tracking_rois.append(image_gray[y:y+h, x:x+w])
@@ -205,12 +208,11 @@ def main():
                     # face_recognizer_model.update(np.asarray(train_images)[-1,:,:], trackers.trackers[track_idx]["label"]) 
                     # face_recognizer_model.update([tracking_rois[-1]], np.asarray([trackers.trackers[track_idx]["label"]]))  
 
-                    # face_recognizer_model.write("model3.yaml")
 
                     label2, confidence2 = face_recognizer_model.predict(tracking_rois[-1])
                     label1, confidence1 = face_recognizer_model.predict(face_roi)
-                    cv2.imshow("Ti1",train_images[-1])
-                    cv2.imshow("fr1",face_roi)
+                    # cv2.imshow("Ti1",train_images[-1])
+                    # cv2.imshow("fr1",face_roi)
 
 
                     # print(f'Tracker ROI')
@@ -238,6 +240,7 @@ def main():
         image_gui = cv2.putText(image_gui, f'{fps:.1f} FPS', (20, 20), cv2.FONT_HERSHEY_SIMPLEX,
                                 0.7, (0, 255, 0), 2, cv2.LINE_AA)
 
+        trackers.draw(image_gui,face_recognizer_model)
         cv2.imshow('Image GUI', image_gui)
 
         keyboardActions(config, image_gui)
