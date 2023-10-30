@@ -151,7 +151,6 @@ def main():
         for (x, y, w, h) in faces_rect:
             cv2.rectangle(image_gui, (x, y), (x+w, y+h), (0, 255, 0), 2)
 
-            print(w,h)
 
             if w < config["min_size_face_roi"] or h < config["min_size_face_roi"]:
                 continue
