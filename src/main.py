@@ -203,7 +203,8 @@ def main():
                     # * Check if the detection overlaps any tracker
 
                     intersection_over_union = computeIOU(face_rect,tracker_dict["bbox"])
-                    print(intersection_over_union)
+                    if args["verbose"]:
+                        print(f'IOU of detection and tracking is : {intersection_over_union}')
 
                     # * Iterate through trackers and see if any non active one matches the label
                     if not tracker_dict["ready2reInit"]:
