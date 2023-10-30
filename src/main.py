@@ -46,11 +46,8 @@ def main():
                         default=0, help='Defines which Haars cascade to use for detection')
     parser.add_argument('-t', '--tracker', type=str, required=False,
                         default="kcf", help='Defines which tracker method to use for tracking')
-    parser.add_argument('-v', '--verbose', type=bool, required=False,
-                        default=False, help='Prints debugging information')
+    parser.add_argument('-v', '--verbose',action='store_true', help='Prints debugging information')
     args = vars(parser.parse_args())
-    # TODO VERBOSE MODE
-    print(args["verbose"])
 
     # * Add adjustment parameters here
     trackers_algorigthms = {
@@ -194,8 +191,9 @@ def main():
                     break
 
                 label, confidence = face_recognizer_model.predict(face_roi)
-                print(f'Confidence is {confidence}')
-                print(f'Label is {label}')
+                if args["verbose"]:
+                    print(f'\n\nLoss is {confidence}')
+                    print(f'Person identified is {face_recognizer_model.getLabelInfo(label)}')
 
                 # * Iterate through trackers and see if any non active one matches the label
 
