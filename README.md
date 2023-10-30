@@ -133,9 +133,9 @@ This is a Python file, so it should be ran in a dedicated terminal running main.
 
 To run the program, the following libraries should be installed:
 ```
-sudo apt-get install idle pygame
+sudo apt install python3 python3-tk
 sudo apt install python3-pip
-pip install tkinter
+pip install pygame
 pip install gtts
 pip install opencv-python
 pip install imutils
@@ -150,10 +150,52 @@ pip install numpy
 
 ### How it works
 
+
 Run main.py:
 - Show your beautiful face to the camera;
+
+
+
 - When prompted to, write your name and press save or hit Enter, it shall now detect your face, identify it, and track it even when you get obstructed by something or leave the camera FOV and come out on the opposite side;
+
+<br>
+<br>
+<div align="center">
+<img  src="docs/entername.png" alt="entername" height="150"><img  src="docs/savename.png" alt="savename" height="120">
+</div>
+<div align="center">Prompt to save your name (click save or hit Enter)</div>
+
+<br>
+<br>
+<div align="center">
+<img  src="docs/detected.png" alt="detected" height="200">
+</div>
+<div align="center">Started recognizing and tracking the face</div>
+
+<br>
+<br>
+<br>
+<br>
+
+<div align="center">
+<img  src="docs/dissapearing.png" alt="dissapearing" height="150"><img  src="docs/dissapeared.png" alt="dissapeared" height="150"><img  src="docs/reappearing.png" alt="reappearing" height="150">
+</div>
+
+<div align="center">Disappearing from one side and appearing on the other </div>
+
+<br>
+<br>
+<br>
+<br>
+<div align="center">
+<img  src="docs/detectedobstruct.png" alt="obstructed" height="150">
+</div>
+<div align="center">Started recognizing and tracking the face</div>
+<br>
+<br>
+
 - Show other faces and repeat.
+
 
 
 <br>
@@ -162,7 +204,7 @@ Arguments when running main.py:
 - -c (defines which Haar Cascade it is used for detection);
 - -t (defines which tracking method is going to be used).
 
-<h1>ADD IMAGES HERE****</h1>
+
 
 
 
