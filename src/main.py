@@ -35,6 +35,7 @@ from lib.trackers import Trackers
 from lib.createPersonData import createPersonData
 from lib.audio_pessoa_desconhecida import play_welcome,name_prompt
 from lib.audio_pessoa_conhecida import hello_again
+from lib.computeIOU import computeIOU
 
 def main():
     # -----------------------------
@@ -70,7 +71,8 @@ def main():
               "cascade": {"path": cascade_paths[args["cascade"]],
                           "scale_factor": 1.1,  # Smaller is more accurate but slower
                           "min_neighbours": 17},  # More neighbours means more accurate detections
-              "new_face_threshold": 75}
+              "new_face_threshold": 75,
+              "IOU_threshold": 0.4}
 
     yamls_path = '../files/yamls'
     imgs_path = '../files/images'
@@ -195,10 +197,15 @@ def main():
                     print(f'\n\nLoss is {confidence}')
                     print(f'Person identified is {face_recognizer_model.getLabelInfo(label)}')
 
-                # * Iterate through trackers and see if any non active one matches the label
 
                 for tracker_dict in trackers.trackers:
 
+                    # * Check if the detection overlaps any tracker
+
+                    intersection_over_union = computeIOU(face_rect,tracker_dict["bbox"])
+                    print(intersection_over_union)
+
+                    # * Iterate through trackers and see if any non active one matches the label
                     if not tracker_dict["ready2reInit"]:
                         continue
 
@@ -216,10 +223,16 @@ def main():
                         tracker_dict["ready2reInit"] = False
 
 
+
+
                 # * Initially the untrained model shall not make confident predictions
                 # * Thus we can assume all predictions with less than a certain confidence are new faces
 
-                if confidence > config["new_face_threshold"]:
+
+
+                if confidence > config["new_face_threshold"]and intersection_over_union < config["IOU_threshold"]:
+
+                    # TODO add condition if Detection overlaps too much with any of the trackings, is most likely not a new person
                     play_welcome()
                     person_name = name_prompt()
                     
