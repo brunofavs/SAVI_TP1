@@ -41,9 +41,7 @@
     This repository was created for evaluation at Industrial Vision Advanced Systems "SAVI 23-24 Trabalho prático 1".
     <br />
     <!-- <a href="https://github.com/brunofavs/SAVI_TP1"><strong>Explore the Wiki »</strong></a> -->
-    <br />
-    <!-- <a href="https://youtu.be">View Demo</a> -->
-    <!-- · -->
+    <br >
     <a href="https://github.com/brunofavs/SAVI_TP1/issues"> <u>Make Suggestion</u> </a>
   </p>
 </div>
@@ -156,7 +154,16 @@ Run main.py:
 - Show your beautiful face to the camera;
 - When prompted to, write your name and press save or hit Enter, it shall now detect your face, identify it, and track it even when you get obstructed by something or leave the camera FOV and come out on the opposite side;
 - Show other faces and repeat.
-***
+
+
+<br>
+
+Arguments when running main.py:
+- -c (defines which Haar Cascade it is used for detection);
+- -t (defines which tracking method is going to be used).
+
+<h1>ADD IMAGES HERE****</h1>
+
 
 
 <!-- CONTACT -->
