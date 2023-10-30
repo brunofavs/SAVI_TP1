@@ -34,6 +34,9 @@
 
 <h3 align="center">Trabalho Prático 1</h3>
 
+<h2><b> Repository Owner: BRUNO SILVA 98374
+<br>Collaborators: ALEXANDRE CAROLA 98365 & PEDRO MARTINS 103800</b></h2>
+
   <p align="center">
     This repository was created for evaluation at Industrial Vision Advanced Systems "SAVI 23-24 Trabalho prático 1".
     <br />
@@ -44,6 +47,7 @@
     <a href="https://github.com/brunofavs/SAVI_TP1/issues"> <u>Make Suggestion</u> </a>
   </p>
 </div>
+<br>
 
 
 
@@ -64,12 +68,11 @@
       </ul>
     </li>
     <li><a href="#usage">Usage</a></li>
-    <li><a href="#contributing">Contributing</a></li>
-    <li><a href="#license">License</a></li>
     <li><a href="#contact">Contact</a></li>
     <li><a href="#acknowledgments">Acknowledgments</a></li>
   </ol>
 </details>
+<br>
 
 
 
