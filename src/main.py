@@ -46,7 +46,11 @@ def main():
                         default=0, help='Defines which Haars cascade to use for detection')
     parser.add_argument('-t', '--tracker', type=str, required=False,
                         default="kcf", help='Defines which tracker method to use for tracking')
+    parser.add_argument('-v', '--verbose', type=bool, required=False,
+                        default=False, help='Prints debugging information')
     args = vars(parser.parse_args())
+    # TODO VERBOSE MODE
+    print(args["verbose"])
 
     # * Add adjustment parameters here
     trackers_algorigthms = {
@@ -158,13 +162,12 @@ def main():
                 person_name = name_prompt()
 
                 if person_name:
-                    train_labels.append(1)
+                    train_labels.append(last_new_label)
                     train_images.append(faces_rois[0])
 
                     face_recognizer_model.train(train_images, np.array(train_labels))
 
 
-                    # TODO Cancel prompt if false positive
                     face_recognizer_model.setLabelInfo(last_new_label,person_name)
 
                     bbox = faces_rect[0]
@@ -260,7 +263,7 @@ def main():
                     train_images.append(tracking_rois[-1])
                     
                     # ! TRAIN STARTS FROM SCRATCH, I WANT UPDATE()
-                    # face_recognizer_model.update([np.array(train_images[-1])], np.array(train_labels[-1]))
+                    face_recognizer_model.update([tracking_rois[-1]], np.array([trackers.trackers[track_idx]["label"]]))
                     
                     # face_recognizer_model.update(np.asarray(train_images)[-1,:,:], trackers.trackers[track_idx]["label"]) 
                     # face_recognizer_model.update([tracking_rois[-1]], np.asarray([trackers.trackers[track_idx]["label"]]))  
