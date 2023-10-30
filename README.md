@@ -34,8 +34,8 @@
 
 <h3 align="center">Trabalho Prático 1</h3>
 
-<h2><b> Repository Owner: BRUNO SILVA 98374
-<br>Collaborators: ALEXANDRE CAROLA 98365 & PEDRO MARTINS 103800</b></h2>
+<h2><b> Repository Owner: Bruno Silva 98374
+<br>Collaborators: Alexandre Carola 98365 & Pedro Martins 103800</b></h2>
 
   <p align="center">
     This repository was created for evaluation at Industrial Vision Advanced Systems "SAVI 23-24 Trabalho prático 1".
