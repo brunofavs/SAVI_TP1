@@ -202,9 +202,6 @@ def main():
 
                     # * Check if the detection overlaps any tracker
 
-                    intersection_over_union = computeIOU(face_rect,tracker_dict["bbox"])
-                    if args["verbose"]:
-                        print(f'IOU of detection and tracking is : {intersection_over_union}')
 
                     # * Iterate through trackers and see if any non active one matches the label
                     if not tracker_dict["ready2reInit"]:
@@ -223,15 +220,28 @@ def main():
                         tracker_dict["reInit_counter"] = 0
                         tracker_dict["ready2reInit"] = False
 
-
-
-
                 # * Initially the untrained model shall not make confident predictions
                 # * Thus we can assume all predictions with less than a certain confidence are new faces
 
+                #  Find tracker with label detected
+                # Check its IOU
+                #  DOnt forget the case if it doens tfind any
+                for tracker_dict in trackers.trackers:
+
+                    intersection_over_union = 0 # if it does not find any
+                    
+                    if tracker_dict["label"] != label:
+                        continue
+
+                    intersection_over_union = computeIOU(face_rect,tracker_dict["bbox"])
 
 
-                if confidence > config["new_face_threshold"]and intersection_over_union < config["IOU_threshold"]:
+                    if args["verbose"]:
+                        print(f'IOU of detection and tracking is : {intersection_over_union}')
+                #! Im always using the same IOU to compare, fuck
+                if confidence > config["new_face_threshold"] and intersection_over_union < config["IOU_threshold"]:
+                # if confidence > config["new_face_threshold"]:
+
 
                     # TODO add condition if Detection overlaps too much with any of the trackings, is most likely not a new person
                     play_welcome()
