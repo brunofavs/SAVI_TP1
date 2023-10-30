@@ -161,7 +161,7 @@ Run main.py:
 <br>
 <br>
 <div align="center">
-<img  src="docs/entername.png" alt="entername" height="150"><img  src="docs/savename.png" alt="savename" height="120">
+<img  src="docs/entername.png" alt="entername" height="150"><img  src="docs/savename.png" alt="savename" height="150">
 </div>
 <div align="center">Prompt to save your name (click save or hit Enter)</div>
 
@@ -190,7 +190,7 @@ Run main.py:
 <div align="center">
 <img  src="docs/detectedobstruct.png" alt="obstructed" height="150">
 </div>
-<div align="center">Started recognizing and tracking the face</div>
+<div align="center">Tracking the face even when obstructed</div>
 <br>
 <br>
 
