@@ -77,7 +77,7 @@
 <!-- ABOUT THE PROJECT -->
 ## About The Project
 <div align="center">
-<img  src="docs/lupa.gif" alt="GIF animated" width="400">
+<img  src="docs/tracking.gif" alt="GIF animated" width="400">
 </div>
 <br>
 
