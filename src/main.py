@@ -72,7 +72,8 @@ def main():
                           "scale_factor": 1.1,  # Smaller is more accurate but slower
                           "min_neighbours": 17},  # More neighbours means more accurate detections
               "new_face_threshold": 75,
-              "IOU_threshold": 0.4}
+              "IOU_threshold": 0.4,
+              "min_size_face_roi":90}
 
     yamls_path = '../files/yamls'
     imgs_path = '../files/images'
@@ -149,9 +150,14 @@ def main():
         # Iterating through rectangles of detected faces
         for (x, y, w, h) in faces_rect:
             cv2.rectangle(image_gui, (x, y), (x+w, y+h), (0, 255, 0), 2)
+
+            print(w,h)
+
+            if w < config["min_size_face_roi"] or h < config["min_size_face_roi"]:
+                continue
+
             faces_rois.append(image_gray[y:y+h, x:x+w])
 
-        # TODO Preprocessing of the NN inputs
 
         if len(faces_rect) != 0 :
         # * The first face will be on a completly untrained model, which crashes, so the first one has necessarily to be training
@@ -223,9 +229,9 @@ def main():
                 # * Initially the untrained model shall not make confident predictions
                 # * Thus we can assume all predictions with less than a certain confidence are new faces
 
-                #  Find tracker with label detected
-                # Check its IOU
-                #  DOnt forget the case if it doens tfind any
+                #*  Find tracker with label detected
+                #*  Check its IOU
+                #*  DOnt forget the case if it doens tfind any
                 for tracker_dict in trackers.trackers:
 
                     intersection_over_union = 0 # if it does not find any
@@ -236,14 +242,13 @@ def main():
                     intersection_over_union = computeIOU(face_rect,tracker_dict["bbox"])
 
 
-                    if args["verbose"]:
-                        print(f'IOU of detection and tracking is : {intersection_over_union}')
-                #! Im always using the same IOU to compare, fuck
+                if args["verbose"]:
+                    print(f'IOU of detection and tracking is : {intersection_over_union}')
+
                 if confidence > config["new_face_threshold"] and intersection_over_union < config["IOU_threshold"]:
                 # if confidence > config["new_face_threshold"]:
 
 
-                    # TODO add condition if Detection overlaps too much with any of the trackings, is most likely not a new person
                     play_welcome()
                     person_name = name_prompt()
                     
